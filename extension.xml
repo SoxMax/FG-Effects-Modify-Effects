@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<root version="3.3">
+	<properties>
+		<name>Feature: Effects Modify Effects</name>
+		<version>1.0.0</version>
+		<author>SoxMax</author>
+		<description>Adds effects that modify other effects</description>
+		<loadorder>100</loadorder>
+	</properties>
+
+	<announcement text="https://forge.fantasygrounds.com/shop/items/457/view \r Effects Modify Effects v1.0.0 \r Adds effects that modify other effects" font="emotefont" />
+
+	<base>
+		<!-- Libraries -->
+		<!-- <script name="EditorManager" file="scripts/manager_editor.lua" /> -->
+		<!-- Strings -->
+		<!-- <includefile source="strings/strings_effect_editor.xml" /> -->
+	</base>
+</root>
