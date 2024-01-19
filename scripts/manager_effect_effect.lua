@@ -23,7 +23,7 @@ function modifyEffect(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
                 effectStringComps[index] = EffectManager35E.rebuildParsedEffectComp(effectComp)
             end
         end
-        rNewEffect.sName = rebuildParsedEffect(effectStringComps)
+        rNewEffect.sName = EffectManager.rebuildParsedEffect(effectStringComps)
     end
 
     addEffect(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
