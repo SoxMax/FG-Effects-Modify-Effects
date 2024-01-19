@@ -6,7 +6,6 @@ function onInit()
 end
 
 function modifyEffect(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
-
     local actor = ActorManager.resolveActor(nodeCT)
     local bonusModsEffects = EffectManager.getEffectsByType(actor, "BONUSMOD")
     if next(bonusModsEffects) then
