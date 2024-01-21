@@ -6,7 +6,7 @@ function onInit()
     EffectManager.addEffect = modifyEffectOnAdd
 
     -- getEffectsBonusByType = EffectManager35E.getEffectsBonusByType
-    -- EffectManager35E.getEffectsBonusByType = modifyEffectsOnRetrieval
+    -- EffectManager35E.getEffectsBonusByType = modifyEffectsBonusByType
 end
 
 function modifyEffectOnAdd(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
@@ -31,7 +31,7 @@ function modifyEffectOnAdd(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
     addEffect(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
 end
 
-function modifyEffectsOnRetrieval(rActor, aEffectType, bAddEmptyBonus, aFilter, rFilterActor, bTargetedOnly, ...)
+function modifyEffectsBonusByType(rActor, aEffectType, bAddEmptyBonus, aFilter, rFilterActor, bTargetedOnly, ...)
     local effects, effectsCount = getEffectsBonusByType(rActor, aEffectType, bAddEmptyBonus, aFilter, rFilterActor, bTargetedOnly, ...)
     if effectsCount > 0 then
         bonusMods = getBonusMods(rActor)
