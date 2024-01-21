@@ -55,10 +55,12 @@ function modifyEffectsOnRetrieval(rActor, aEffectType, bAddEmptyBonus, aFilter, 
     local effects, effectsCount = getEffectsBonusByType(rActor, aEffectType, bAddEmptyBonus, aFilter, rFilterActor, bTargetedOnly, ...)
     if effectsCount > 0 then
         bonusMods = getBonusMods(rActor)
-        for bonusType, effect in pairs(effects) do
-            local bonusMod = bonusMods[bonusType]
-            if bonusMod then
-                effect.mod = effect.mod + bonusMod
+        if next(bonusMods) then
+            for bonusType, effect in pairs(effects) do
+                local bonusMod = bonusMods[bonusType]
+                if bonusMod then
+                    effect.mod = effect.mod + bonusMod
+                end
             end
         end
     end
