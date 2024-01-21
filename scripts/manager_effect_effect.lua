@@ -16,7 +16,7 @@ function modifyEffectOnAdd(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
         local effectStringComps = EffectManager.parseEffect(rNewEffect.sName)
         for index, effectStringComp in ipairs(effectStringComps) do
             effectComp = EffectManager.parseEffectCompSimple(effectStringComp)
-            if effectComp.type ~= '' and next(effectComp.remainder) then
+            if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" and next(effectComp.remainder) then
                 for _, bonus in ipairs(effectComp.remainder) do
                     if bonusMods[bonus] then
                         effectComp.mod = effectComp.mod + bonusMods[bonus]
