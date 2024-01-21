@@ -52,9 +52,7 @@ function getBonusMods(rActor)
 end
 
 function modifyEffectsOnRetrieval(rActor, aEffectType, bAddEmptyBonus, aFilter, rFilterActor, bTargetedOnly, ...)
-    Debug.chat(rActor, aEffectType, bAddEmptyBonus, aFilter, rFilterActor, bTargetedOnly)
     local effects, effectsCount = getEffectsBonusByType(rActor, aEffectType, bAddEmptyBonus, aFilter, rFilterActor, bTargetedOnly, ...)
-    Debug.chat(effects, effectsCount)
     if effectsCount > 0 then
         bonusMods = getBonusMods(rActor)
         for bonusType, effect in pairs(effects) do
@@ -64,6 +62,5 @@ function modifyEffectsOnRetrieval(rActor, aEffectType, bAddEmptyBonus, aFilter, 
             end
         end
     end
-    Debug.chat(effects, effectsCount)
     return effects, effectsCount
 end
