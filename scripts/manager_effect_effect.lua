@@ -5,7 +5,7 @@ function onInit()
     addEffect = EffectManager.addEffect
     EffectManager.addEffect = modifyEffectOnAdd
 
-    -- getEffectsBonusByType = EffectManager35E.getEffectsBonusByType
+    getEffectsBonusByType = EffectManager35E.getEffectsBonusByType
     -- EffectManager35E.getEffectsBonusByType = modifyEffectsBonusByType
 end
 
