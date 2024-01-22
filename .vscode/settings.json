@@ -1,0 +1,24 @@
+{
+    "Lua.diagnostics.globals": [
+        "ActorManager",
+        "ActorManager35E",
+        "ActionDamage",
+        "ActionSave",
+        "Comm",
+        "DataCommon",
+        "DB",
+        "Debug",
+        "DiceManager",
+        "EditorManager",
+        "EffectManager",
+        "EffectManager35E",
+        "Extension",
+        "Interface",
+        "Session",
+        "StringManager",
+        "User"
+    ],
+    "Lua.diagnostics.disable": [
+        "lowercase-global"
+    ]
+}
