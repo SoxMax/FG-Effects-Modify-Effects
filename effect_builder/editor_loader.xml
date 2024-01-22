@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<root version="3.3">
+    <!-- Strings -->
+    <includefile source="effect_builder/strings/strings_effect_editor.xml" />
+
+    <!-- Effect Editors -->
+    <includefile source="effect_builder/effects/BONUSMOD.xml" />
+</root>

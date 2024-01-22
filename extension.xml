@@ -19,7 +19,8 @@
 	<base>
 		<!-- Libraries -->
 		<script name="EffectEffectManager" file="scripts/manager_effect_effect.lua" />
-		<!-- Strings -->
-		<!-- <includefile source="strings/strings_effect_editor.xml" /> -->
+		
+		<!-- Effect Builder -->
+		<includefile source="effect_builder/editor_loader.xml" />
 	</base>
 </root>

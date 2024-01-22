@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<root>
+    <windowclass name="effect_BONUSMOD">
+        <script file="effect_builder/effects/scripts/BONUSMOD.lua" />
+		<margins control="0,0,0,2" />
+        <sheetdata>
+            <leftanchor_eb />
+
+            <number_eb_valueholder name="effect_modifier" />
+
+            <combobox_eb_bonus_type name="effect_bonus_type" />
+        </sheetdata>
+    </windowclass>
+    <script name="loader_BONUSMOD">
+        function onInit()
+            if Extension.isEffectBuilderRulesetPluginLoaded and Extension.isEffectBuilderRulesetPluginLoaded() then
+                EditorManager.addEffectEditor(
+                    {
+                        value="BONUSMOD",
+                        categoryres="category_misc",
+                        labelres="effect_bonusmod",
+                        windowclass="effect_BONUSMOD"
+                    }
+                )
+            end
+        end
+    </script>
+</root>
