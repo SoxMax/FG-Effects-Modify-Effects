@@ -1,3 +1,5 @@
+local addEffect
+
 function onInit()
     addEffect = EffectManager.addEffect
     EffectManager.addEffect = modifyEffectOnAdd
