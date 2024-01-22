@@ -51,7 +51,7 @@ function getBonusMods(rActor)
     local bonusModsEffects = EffectManager35E.getEffectsByType(rActor, "BONUSMOD")
     local bonusSum = {}
     for _, bonusMod in ipairs(bonusModsEffects) do
-        local bonus = bonusMod.remainder[1]
+        local bonus = (bonusMod.remainder[1] or "any")
         bonusSum[bonus] = (bonusSum[bonus] or 0) + bonusMod.mod
     end
     return bonusSum
