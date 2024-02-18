@@ -1,8 +1,17 @@
 local addEffect
+local onEffect
 
 function onInit()
     addEffect = EffectManager.addEffect
     EffectManager.addEffect = modifyEffectOnAdd
+
+    ActionsManager.registerModHandler("effect", modifyEffect);
+end
+
+function modifyEffect(rSource, rTarget, rRoll)
+    -- Debug.chat(rSource, rTarget, rRoll)
+    local rEffect = EffectManager.decodeEffect(rRoll);
+
 end
 
 function modifyEffectOnAdd(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
