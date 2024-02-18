@@ -4,6 +4,7 @@
         "ActorManager35E",
         "ActionDamage",
         "ActionSave",
+        "ActionsManager",
         "Comm",
         "DataCommon",
         "DB",
