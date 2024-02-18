@@ -65,7 +65,6 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 			end
 		end
 	end
-	Debug.chat("Passed Filters:", aRangeFilter, aOtherFilter)
 	
 	-- Determine effect type targeting
 	local bTargetSupport = StringManager.isWord(sEffectType, DataCommon.targetableeffectcomps);
@@ -137,6 +136,7 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 						local j = 1;
 						while aComponents[j] do
 							if StringManager.contains(DataCommon.dmgtypes, aComponents[j]) or
+                                    -- StringManager.contains(DataCommon.bonustypes, aComponents[j]) or
 									aComponents[j] == "all" then
 								-- Skip
 							elseif StringManager.contains(DataCommon.rangetypes, aComponents[j]) then
@@ -147,7 +147,6 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 							
 							j = j + 1;
 						end
-						Debug.chat("Filterables:", aEffectRangeFilter, aEffectOtherFilter)
 					
 						-- Check for match
 						local comp_match = false;
