@@ -11,8 +11,8 @@ function modifyEffect(rSource, rTarget, rRoll)
     for index, effectStringComp in ipairs(effectStringComps) do
         effectComp = EffectManager.parseEffectCompSimple(effectStringComp)
         if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" and next(effectComp.remainder) then
-            combineBonusMods(bonusMods, getBonusMods(rSource, addAllBonusTypes({"apply"}, effectComp.remainder)))
-            combineBonusMods(bonusMods, getBonusMods(rTarget, addAllBonusTypes({"recieve"}, effectComp.remainder)))
+            combineBonusMods(bonusMods, getBonusMods(rSource, createEffectFilter("apply", effectComp.remainder)))
+            combineBonusMods(bonusMods, getBonusMods(rTarget, createEffectFilter("recieve", effectComp.remainder)))
             for _, bonusType in ipairs(effectComp.remainder) do
                 if bonusMods[bonusType] then
                     effectComp.mod = effectComp.mod + bonusMods[bonusType]
@@ -48,13 +48,17 @@ function combineBonusMods(existingMods, newMods)
     end
 end
 
-function addAllBonusTypes(list1, list2)
-    for _, entry in ipairs(list2) do
-        if StringManager.contains(DataCommon.bonustypes, entry) then
-            table.insert(list1, entry)
+function createEffectFilter(effectModType, effectBonusTypes)
+    local filter = {effectModType}
+    if #effectBonusTypes > 0 then
+        for _, entry in ipairs(effectBonusTypes) do
+            if StringManager.contains(DataCommon.bonustypes, entry) then
+                table.insert(filter, entry)
+            end
         end
+        return {filter}
     end
-    return list1
+    return filter
 end
 
 -- Cloned from manger_effect_35E.lua (EffectManager35E)
