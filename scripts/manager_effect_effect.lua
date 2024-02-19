@@ -3,7 +3,7 @@ local onEffect
 
 function onInit()
     addEffect = EffectManager.addEffect
-    EffectManager.addEffect = modifyEffectOnAdd
+    -- EffectManager.addEffect = modifyEffectOnAdd
 
     ActionsManager.registerModHandler("effect", modifyEffect);
 end
@@ -11,7 +11,26 @@ end
 function modifyEffect(rSource, rTarget, rRoll)
     -- Debug.chat(rSource, rTarget, rRoll)
     local rEffect = EffectManager.decodeEffect(rRoll);
-
+    local effectsModified = false
+    local effectStringComps = EffectManager.parseEffect(rEffect.sName)
+    local bonusMods = {}
+    for index, effectStringComp in ipairs(effectStringComps) do
+        effectComp = EffectManager.parseEffectCompSimple(effectStringComp)
+        if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" and next(effectComp.remainder) then
+            combineBonusMods(bonusMods, getBonusMods(rSource, effectComp.remainder))
+            for _, bonusType in ipairs(effectComp.remainder) do
+                if bonusMods[bonusType] then
+                    effectComp.mod = effectComp.mod + bonusMods[bonusType]
+                    effectStringComps[index] = EffectManager35E.rebuildParsedEffectComp(effectComp)
+                    effectsModified = true
+                end
+            end
+        end
+    end
+    if effectsModified then
+        rEffect.sName = EffectManager.rebuildParsedEffect(effectStringComps)
+        rRoll.sDesc = EffectManager.encodeEffect(rEffect).sDesc
+    end
 end
 
 function modifyEffectOnAdd(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
