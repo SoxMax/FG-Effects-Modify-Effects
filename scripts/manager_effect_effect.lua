@@ -32,9 +32,7 @@ function modifyEffect(rSource, rTarget, rRoll)
 end
 
 function getBonusMods(rActor, bonusTypeFilter)
-    Debug.chat(bonusTypeFilter)
     local bonusModsEffects = getEffectsByType(rActor, "BONUSMOD", bonusTypeFilter)
-    Debug.chat(bonusModsEffects)
     local bonusSum = {}
     for _, bonusMod in ipairs(bonusModsEffects) do
         local bonus = (bonusMod.remainder[1] or "any")
