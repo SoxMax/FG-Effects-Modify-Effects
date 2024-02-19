@@ -45,14 +45,14 @@ function getBonusMods(rActor, bonusTypeFilter)
     local bonusModsEffects = getEffectsByType(rActor, "BONUSMOD", bonusTypeFilter)
     local bonusSum = {}
     for _, bonusMod in ipairs(bonusModsEffects) do
-		local bonus = getBonusModTypes(bonusMod.remainder)
+		local bonus = getBonusModKeys(bonusMod.remainder)
         bonusSum[bonus] = (bonusSum[bonus] or 0) + bonusMod.mod
     end
     return bonusSum
 end
 
-function getBonusModTypes(bonusModRemainers)
-	local bonusTypes = extractBonusTypes(bonusModRemainers)
+function getBonusModKeys(effectRemainder)
+	local bonusTypes = extractBonusTypes(effectRemainder)
 	if #bonusTypes == 0 then
 		return "any"
 	elseif #bonusTypes == 1 then
@@ -60,12 +60,6 @@ function getBonusModTypes(bonusModRemainers)
 	else
 		return table.sort(bonusTypes)
 	end
-end
-
-function combineBonusMods(existingMods, newMods)
-    for bonusType, bonus in pairs(newMods) do
-		existingMods[bonusType] = (existingMods[bonusType] or 0) + bonus
-    end
 end
 
 function extractBonusTypes(effectRemainder)
@@ -76,6 +70,12 @@ function extractBonusTypes(effectRemainder)
 		end
 	end
 	return bonusTypes
+end
+
+function combineBonusMods(existingMods, newMods)
+    for bonusType, bonus in pairs(newMods) do
+		existingMods[bonusType] = (existingMods[bonusType] or 0) + bonus
+    end
 end
 
 function createEffectFilter(effectModType, effectBonusTypes)
