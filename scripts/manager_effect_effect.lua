@@ -1,15 +1,9 @@
-local addEffect
-local onEffect
-
 function onInit()
-    addEffect = EffectManager.addEffect
-    -- EffectManager.addEffect = modifyEffectOnAdd
-
     ActionsManager.registerModHandler("effect", modifyEffect);
 end
 
+-- applied & recieved
 function modifyEffect(rSource, rTarget, rRoll)
-    -- Debug.chat(rSource, rTarget, rRoll)
     local rEffect = EffectManager.decodeEffect(rRoll);
     local effectsModified = false
     local effectStringComps = EffectManager.parseEffect(rEffect.sName)
@@ -17,7 +11,8 @@ function modifyEffect(rSource, rTarget, rRoll)
     for index, effectStringComp in ipairs(effectStringComps) do
         effectComp = EffectManager.parseEffectCompSimple(effectStringComp)
         if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" and next(effectComp.remainder) then
-            combineBonusMods(bonusMods, getBonusMods(rTarget, effectComp.remainder))
+            combineBonusMods(bonusMods, getBonusMods(rSource, addAllBonusTypes({"apply"}, effectComp.remainder)))
+            combineBonusMods(bonusMods, getBonusMods(rTarget, addAllBonusTypes({"recieve"}, effectComp.remainder)))
             for _, bonusType in ipairs(effectComp.remainder) do
                 if bonusMods[bonusType] then
                     effectComp.mod = effectComp.mod + bonusMods[bonusType]
@@ -33,29 +28,10 @@ function modifyEffect(rSource, rTarget, rRoll)
     end
 end
 
-function modifyEffectOnAdd(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
-    local actor = ActorManager.resolveActor(nodeCT)
-    local effectStringComps = EffectManager.parseEffect(rNewEffect.sName)
-    local bonusMods = {}
-    for index, effectStringComp in ipairs(effectStringComps) do
-        effectComp = EffectManager.parseEffectCompSimple(effectStringComp)
-        if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" and next(effectComp.remainder) then
-            combineBonusMods(bonusMods, getBonusMods(actor, effectComp.remainder))
-            for _, bonusType in ipairs(effectComp.remainder) do
-                if bonusMods[bonusType] then
-                    effectComp.mod = effectComp.mod + bonusMods[bonusType]
-                    effectStringComps[index] = EffectManager35E.rebuildParsedEffectComp(effectComp)
-                end
-            end
-        end
-    end
-    rNewEffect.sName = EffectManager.rebuildParsedEffect(effectStringComps)
-
-    addEffect(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
-end
-
 function getBonusMods(rActor, bonusTypeFilter)
+    Debug.chat(bonusTypeFilter)
     local bonusModsEffects = getEffectsByType(rActor, "BONUSMOD", bonusTypeFilter)
+    Debug.chat(bonusModsEffects)
     local bonusSum = {}
     for _, bonusMod in ipairs(bonusModsEffects) do
         local bonus = (bonusMod.remainder[1] or "any")
@@ -70,6 +46,15 @@ function combineBonusMods(existingMods, newMods)
             existingMods[bonusType] = bonus
         end
     end
+end
+
+function addAllBonusTypes(list1, list2)
+    for _, entry in ipairs(list2) do
+        if StringManager.contains(DataCommon.bonustypes, entry) then
+            table.insert(list1, entry)
+        end
+    end
+    return list1
 end
 
 -- Cloned from manger_effect_35E.lua (EffectManager35E)
