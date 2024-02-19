@@ -1,8 +1,6 @@
 local onEffect
 
 function onInit()
-    -- ActionsManager.registerModHandler("effect", modifyEffect);
-
 	onEffect = ActionEffect.onEffect
 	ActionEffect.onEffect = onEffectModify
 end
@@ -13,7 +11,7 @@ function onEffectModify(rSource, rTarget, rRoll, ...)
 end
 
 function modifyEffect(rSource, rTarget, rRoll)
-    local rEffect = EffectManager.decodeEffect(rRoll);
+    local rEffect = EffectManager.decodeEffect(rRoll)
     local effectsModified = false
     local effectStringComps = EffectManager.parseEffect(rEffect.sName)
     local bonusMods = {}
