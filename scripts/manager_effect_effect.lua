@@ -10,16 +10,19 @@ function modifyEffect(rSource, rTarget, rRoll)
     local bonusMods = {}
     for index, effectStringComp in ipairs(effectStringComps) do
         effectComp = EffectManager.parseEffectCompSimple(effectStringComp)
-        if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" and next(effectComp.remainder) then
-            combineBonusMods(bonusMods, getBonusMods(rSource, createEffectFilter("apply", effectComp.remainder)))
-            combineBonusMods(bonusMods, getBonusMods(rTarget, createEffectFilter("recieve", effectComp.remainder)))
-            for _, bonusType in ipairs(effectComp.remainder) do
-                if bonusMods[bonusType] then
-                    effectComp.mod = effectComp.mod + bonusMods[bonusType]
-                    effectStringComps[index] = EffectManager35E.rebuildParsedEffectComp(effectComp)
-                    effectsModified = true
-                end
-            end
+        if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" then
+			local bonusTypes = extractBonusTypes(effectComp.remainder)
+			if  #bonusTypes > 0 then
+				combineBonusMods(bonusMods, getBonusMods(rSource, createEffectFilter("apply", bonusTypes)))
+				combineBonusMods(bonusMods, getBonusMods(rTarget, createEffectFilter("recieve", bonusTypes)))
+				for _, bonusType in ipairs(bonusTypes) do
+					if bonusMods[bonusType] then
+						effectComp.mod = effectComp.mod + bonusMods[bonusType]
+						effectStringComps[index] = EffectManager35E.rebuildParsedEffectComp(effectComp)
+						effectsModified = true
+					end
+				end
+			end
         end
     end
     if effectsModified then
@@ -48,17 +51,22 @@ function combineBonusMods(existingMods, newMods)
     end
 end
 
+function extractBonusTypes(effectRemainder)
+	local bonusTypes = {}
+	for _, entry in ipairs(effectRemainder) do
+		if StringManager.contains(DataCommon.bonustypes, entry) then
+			table.insert(bonusTypes, entry)
+		end
+	end
+	return bonusTypes
+end
+
 function createEffectFilter(effectModType, effectBonusTypes)
     local filter = {effectModType}
-    if #effectBonusTypes > 0 then
-        for _, entry in ipairs(effectBonusTypes) do
-            if StringManager.contains(DataCommon.bonustypes, entry) then
-                table.insert(filter, entry)
-            end
-        end
-        return {filter}
-    end
-    return filter
+	for _, entry in ipairs(effectBonusTypes) do
+			table.insert(filter, entry)
+	end
+    return {filter}
 end
 
 -- Cloned from manger_effect_35E.lua (EffectManager35E)
