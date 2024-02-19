@@ -43,7 +43,6 @@ end
 
 function getBonusMods(rActor, bonusTypeFilter)
     local bonusModsEffects = getEffectsByType(rActor, "BONUSMOD", bonusTypeFilter)
-	Debug.chat(bonusModsEffects)
     local bonusSum = {}
     for _, bonusMod in ipairs(bonusModsEffects) do
 		local bonus = getBonusModTypes(bonusMod.remainder)
