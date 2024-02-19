@@ -1,5 +1,15 @@
+local onEffect
+
 function onInit()
-    ActionsManager.registerModHandler("effect", modifyEffect);
+    -- ActionsManager.registerModHandler("effect", modifyEffect);
+
+	onEffect = ActionEffect.onEffect
+	ActionEffect.onEffect = onEffectModify
+end
+
+function onEffectModify(rSource, rTarget, rRoll, ...)
+	modifyEffect(rSource, rTarget, rRoll)
+	onEffect(rSource, rTarget, rRoll, ...)
 end
 
 function modifyEffect(rSource, rTarget, rRoll)
@@ -28,22 +38,35 @@ function modifyEffect(rSource, rTarget, rRoll)
         rEffect.sName = EffectManager.rebuildParsedEffect(effectStringComps)
         rRoll.sDesc = EffectManager.encodeEffect(rEffect).sDesc
     end
+	return true
 end
 
 function getBonusMods(rActor, bonusTypeFilter)
     local bonusModsEffects = getEffectsByType(rActor, "BONUSMOD", bonusTypeFilter)
+	Debug.chat(bonusModsEffects)
     local bonusSum = {}
     for _, bonusMod in ipairs(bonusModsEffects) do
-        local bonus = (bonusMod.remainder[1] or "any")
+		local bonus = getBonusModTypes(bonusMod.remainder[1])
         bonusSum[bonus] = (bonusSum[bonus] or 0) + bonusMod.mod
     end
     return bonusSum
 end
 
+function getBonusModTypes(bonusModRemainers)
+	local bonusTypes = extractBonusTypes(bonusModRemainers)
+	if #bonusTypes == 0 then
+		return "any"
+	elseif #bonusTypes == 1 then
+		return bonusTypes[1]
+	else
+		return table.sort(bonusTypes)
+	end
+end
+
 function combineBonusMods(existingMods, newMods)
     for bonusType, bonus in pairs(newMods) do
         if not existingMods[bonusType] then
-            existingMods[bonusType] = bonus
+            existingMods[bonusType] = existingMods[bonusType] + bonus
         end
     end
 end
