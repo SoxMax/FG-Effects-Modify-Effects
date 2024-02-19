@@ -17,7 +17,7 @@ function modifyEffect(rSource, rTarget, rRoll)
     for index, effectStringComp in ipairs(effectStringComps) do
         effectComp = EffectManager.parseEffectCompSimple(effectStringComp)
         if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" and next(effectComp.remainder) then
-            combineBonusMods(bonusMods, getBonusMods(rSource, effectComp.remainder))
+            combineBonusMods(bonusMods, getBonusMods(rTarget, effectComp.remainder))
             for _, bonusType in ipairs(effectComp.remainder) do
                 if bonusMods[bonusType] then
                     effectComp.mod = effectComp.mod + bonusMods[bonusType]
