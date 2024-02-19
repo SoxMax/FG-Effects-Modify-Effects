@@ -46,7 +46,7 @@ function getBonusMods(rActor, bonusTypeFilter)
 	Debug.chat(bonusModsEffects)
     local bonusSum = {}
     for _, bonusMod in ipairs(bonusModsEffects) do
-		local bonus = getBonusModTypes(bonusMod.remainder[1])
+		local bonus = getBonusModTypes(bonusMod.remainder)
         bonusSum[bonus] = (bonusSum[bonus] or 0) + bonusMod.mod
     end
     return bonusSum
@@ -65,9 +65,7 @@ end
 
 function combineBonusMods(existingMods, newMods)
     for bonusType, bonus in pairs(newMods) do
-        if not existingMods[bonusType] then
-            existingMods[bonusType] = existingMods[bonusType] + bonus
-        end
+		existingMods[bonusType] = (existingMods[bonusType] or 0) + bonus
     end
 end
 
