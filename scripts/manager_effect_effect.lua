@@ -2,7 +2,6 @@ function onInit()
     ActionsManager.registerModHandler("effect", modifyEffect);
 end
 
--- applied & recieved
 function modifyEffect(rSource, rTarget, rRoll)
     local rEffect = EffectManager.decodeEffect(rRoll);
     local effectsModified = false
