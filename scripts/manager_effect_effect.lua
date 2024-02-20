@@ -20,8 +20,8 @@ function modifyEffect(rSource, rTarget, rRoll)
         if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" then
 			local bonusTypes = extractBonusTypes(effectComp.remainder)
 			if  #bonusTypes > 0 then
-				combineBonusMods(bonusMods, getBonusMods(rSource, createEffectFilter("apply", bonusTypes)))
-				combineBonusMods(bonusMods, getBonusMods(rTarget, createEffectFilter("recieve", bonusTypes)))
+				combineBonusMods(bonusMods, getBonusMods(rSource, createEffectFilter("apply", bonusTypes), rTarget))
+				combineBonusMods(bonusMods, getBonusMods(rTarget, createEffectFilter("recieve", bonusTypes), rSource))
 				for _, bonusType in ipairs(bonusTypes) do
 					if bonusMods[bonusType] then
 						effectComp.mod = effectComp.mod + bonusMods[bonusType]
@@ -39,8 +39,8 @@ function modifyEffect(rSource, rTarget, rRoll)
 	return true
 end
 
-function getBonusMods(rActor, bonusTypeFilter)
-    local bonusModsEffects = getEffectsByType(rActor, "BONUSMOD", bonusTypeFilter)
+function getBonusMods(rActor, bonusTypeFilter, rFilterActor)
+    local bonusModsEffects = getEffectsByType(rActor, "BONUSMOD", bonusTypeFilter, rFilterActor)
     local bonusSum = {}
     for _, bonusMod in ipairs(bonusModsEffects) do
 		local bonus = getBonusModKeys(bonusMod.remainder)
