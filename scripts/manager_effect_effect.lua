@@ -81,7 +81,7 @@ function createEffectFilter(effectModType, effectBonusTypes)
 	for _, entry in ipairs(effectBonusTypes) do
 			table.insert(filter, entry)
 	end
-    return {filter}
+    return filter
 end
 
 -- Cloned from manger_effect_35E.lua (EffectManager35E)
@@ -93,6 +93,7 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 	
 	-- Set up filters
 	local aRangeFilter = {};
+	local aBonusFilter = {};
 	local aOtherFilter = {};
 	if aFilter then
 		for _,v in pairs(aFilter) do
@@ -100,6 +101,8 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 				table.insert(aOtherFilter, v);
 			elseif StringManager.contains(DataCommon.rangetypes, v) then
 				table.insert(aRangeFilter, v);
+			elseif StringManager.contains(DataCommon.bonustypes, v) then
+				table.insert(aBonusFilter, v);
 			else
 				table.insert(aOtherFilter, v);
 			end
@@ -142,6 +145,7 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 					else
 						-- Strip energy/bonus types for subtype comparison
 						local aEffectRangeFilter = {};
+						local aEffectBonusFilter = {};
 						local aEffectOtherFilter = {};
 						
 						local aComponents = {};
@@ -181,6 +185,8 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 								-- Skip
 							elseif StringManager.contains(DataCommon.rangetypes, aComponents[j]) then
 								table.insert(aEffectRangeFilter, aComponents[j]);
+							elseif StringManager.contains(DataCommon.bonustypes, aComponents[j]) then
+								table.insert(aEffectBonusFilter, aComponents[j]);
 							else
 								table.insert(aEffectOtherFilter, aComponents[j]);
 							end
@@ -209,6 +215,18 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 									end
 								end
 								if not bRangeMatch then
+									comp_match = false;
+								end
+							end
+							if #aEffectBonusFilter > 0 then
+								local bBonusMatch = false;
+								for _,v2 in pairs(aBonusFilter) do
+									if StringManager.contains(aEffectBonusFilter, v2) then
+										bBonusMatch = true;
+										break;
+									end
+								end
+								if not bBonusMatch then
 									comp_match = false;
 								end
 							end
