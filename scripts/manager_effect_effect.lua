@@ -1,47 +1,87 @@
-local addEffect
+local onEffect
 
 function onInit()
-    addEffect = EffectManager.addEffect
-    EffectManager.addEffect = modifyEffectOnAdd
+	onEffect = ActionEffect.onEffect
+	ActionEffect.onEffect = onEffectModify
 end
 
-function modifyEffectOnAdd(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
-    local actor = ActorManager.resolveActor(nodeCT)
-    local effectStringComps = EffectManager.parseEffect(rNewEffect.sName)
+function onEffectModify(rSource, rTarget, rRoll, ...)
+	modifyEffect(rSource, rTarget, rRoll)
+	onEffect(rSource, rTarget, rRoll, ...)
+end
+
+function modifyEffect(rSource, rTarget, rRoll)
+    local rEffect = EffectManager.decodeEffect(rRoll)
+    local effectsModified = false
+    local effectStringComps = EffectManager.parseEffect(rEffect.sName)
     local bonusMods = {}
     for index, effectStringComp in ipairs(effectStringComps) do
         effectComp = EffectManager.parseEffectCompSimple(effectStringComp)
-        if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" and next(effectComp.remainder) then
-            combineBonusMods(bonusMods, getBonusMods(actor, effectComp.remainder))
-            for _, bonusType in ipairs(effectComp.remainder) do
-                if bonusMods[bonusType] then
-                    effectComp.mod = effectComp.mod + bonusMods[bonusType]
-                    effectStringComps[index] = EffectManager35E.rebuildParsedEffectComp(effectComp)
-                end
-            end
+        if effectComp.type ~= '' and effectComp.type ~= "BONUSMOD" then
+			local bonusTypes = extractBonusTypes(effectComp.remainder)
+			if  #bonusTypes > 0 then
+				combineBonusMods(bonusMods, getBonusMods(rSource, createEffectFilter("create", bonusTypes), rTarget))
+				combineBonusMods(bonusMods, getBonusMods(rTarget, createEffectFilter("receive", bonusTypes), rSource))
+				for _, bonusType in ipairs(bonusTypes) do
+					if bonusMods[bonusType] then
+						effectComp.mod = effectComp.mod + bonusMods[bonusType]
+						effectStringComps[index] = EffectManager35E.rebuildParsedEffectComp(effectComp)
+						effectsModified = true
+					end
+				end
+			end
         end
     end
-    rNewEffect.sName = EffectManager.rebuildParsedEffect(effectStringComps)
-
-    addEffect(sUser, sIdentity, nodeCT, rNewEffect, bShowMsg, ...)
+    if effectsModified then
+        rEffect.sName = EffectManager.rebuildParsedEffect(effectStringComps)
+        rRoll.sDesc = EffectManager.encodeEffect(rEffect).sDesc
+    end
+	return true
 end
 
-function getBonusMods(rActor, bonusTypeFilter)
-    local bonusModsEffects = getEffectsByType(rActor, "BONUSMOD", bonusTypeFilter)
+function getBonusMods(rActor, bonusTypeFilter, rFilterActor)
+    local bonusModsEffects = getEffectsByType(rActor, "BONUSMOD", bonusTypeFilter, rFilterActor)
     local bonusSum = {}
     for _, bonusMod in ipairs(bonusModsEffects) do
-        local bonus = (bonusMod.remainder[1] or "any")
+		local bonus = getBonusModKeys(bonusMod.remainder)
         bonusSum[bonus] = (bonusSum[bonus] or 0) + bonusMod.mod
     end
     return bonusSum
 end
 
+function getBonusModKeys(effectRemainder)
+	local bonusTypes = extractBonusTypes(effectRemainder)
+	if #bonusTypes == 0 then
+		return "any"
+	elseif #bonusTypes == 1 then
+		return bonusTypes[1]
+	else
+		return table.sort(bonusTypes)
+	end
+end
+
+function extractBonusTypes(effectRemainder)
+	local bonusTypes = {}
+	for _, entry in ipairs(effectRemainder) do
+		if StringManager.contains(DataCommon.bonustypes, entry) then
+			table.insert(bonusTypes, entry)
+		end
+	end
+	return bonusTypes
+end
+
 function combineBonusMods(existingMods, newMods)
     for bonusType, bonus in pairs(newMods) do
-        if not existingMods[bonusType] then
-            existingMods[bonusType] = bonus
-        end
+		existingMods[bonusType] = (existingMods[bonusType] or 0) + bonus
     end
+end
+
+function createEffectFilter(effectModType, effectBonusTypes)
+    local filter = {effectModType}
+	for _, entry in ipairs(effectBonusTypes) do
+			table.insert(filter, entry)
+	end
+    return filter
 end
 
 -- Cloned from manger_effect_35E.lua (EffectManager35E)
@@ -53,6 +93,7 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 	
 	-- Set up filters
 	local aRangeFilter = {};
+	local aBonusFilter = {};
 	local aOtherFilter = {};
 	if aFilter then
 		for _,v in pairs(aFilter) do
@@ -60,6 +101,8 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 				table.insert(aOtherFilter, v);
 			elseif StringManager.contains(DataCommon.rangetypes, v) then
 				table.insert(aRangeFilter, v);
+			elseif StringManager.contains(DataCommon.bonustypes, v) then
+				table.insert(aBonusFilter, v);
 			else
 				table.insert(aOtherFilter, v);
 			end
@@ -102,6 +145,7 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 					else
 						-- Strip energy/bonus types for subtype comparison
 						local aEffectRangeFilter = {};
+						local aEffectBonusFilter = {};
 						local aEffectOtherFilter = {};
 						
 						local aComponents = {};
@@ -141,6 +185,8 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 								-- Skip
 							elseif StringManager.contains(DataCommon.rangetypes, aComponents[j]) then
 								table.insert(aEffectRangeFilter, aComponents[j]);
+							elseif StringManager.contains(DataCommon.bonustypes, aComponents[j]) then
+								table.insert(aEffectBonusFilter, aComponents[j]);
 							else
 								table.insert(aEffectOtherFilter, aComponents[j]);
 							end
@@ -169,6 +215,18 @@ function getEffectsByType(rActor, sEffectType, aFilter, rFilterActor, bTargetedO
 									end
 								end
 								if not bRangeMatch then
+									comp_match = false;
+								end
+							end
+							if #aEffectBonusFilter > 0 then
+								local bBonusMatch = false;
+								for _,v2 in pairs(aBonusFilter) do
+									if StringManager.contains(aEffectBonusFilter, v2) then
+										bBonusMatch = true;
+										break;
+									end
+								end
+								if not bBonusMatch then
 									comp_match = false;
 								end
 							end
