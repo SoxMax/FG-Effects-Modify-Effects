@@ -10,6 +10,15 @@
             <number_eb_valueholder name="effect_modifier" />
 
             <combobox_eb_bonus_type name="effect_bonus_type" />
+
+            <cycler_eb_valueholder name="effect_generation">
+                <anchored width="120" />
+                <parameters>
+                    <defaultlabelres mergerule="replace">allgeneration</defaultlabelres>
+                    <labelsres>create|receive</labelsres>
+                    <values>create|receive</values>
+                </parameters>
+            </cycler_eb_valueholder>
         </sheetdata>
     </windowclass>
     <script name="loader_BONUSMOD">
