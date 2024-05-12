@@ -2,7 +2,7 @@
 <root version="3.3">
 	<properties>
 		<name>Feature: Effects Modify Effects</name>
-		<version>1.1.0</version>
+		<version>1.1.1</version>
 		<author>SoxMax</author>
 		<description>Adds effects that modify other effects</description>
 		<loadorder>100</loadorder>
@@ -14,7 +14,7 @@
 		</ruleset>
 	</properties>
 
-	<announcement text="https://forge.fantasygrounds.com/shop/items/1562/view \r Effects Modify Effects v1.1.0 \r Adds effects that modify other effects" font="emotefont" />
+	<announcement text="https://forge.fantasygrounds.com/shop/items/1562/view \r Effects Modify Effects v1.1.1 \r Adds effects that modify other effects" font="emotefont" />
 
 	<base>
 		<!-- Libraries -->
