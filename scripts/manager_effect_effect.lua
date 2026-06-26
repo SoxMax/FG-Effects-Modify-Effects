@@ -77,6 +77,9 @@ function updateBonusMods(bonusMods, bonusTypes, rSource, rTarget)
 			table.insert(newBonusTypes, bonusType)
 		end
 	end
+	if #newBonusTypes == 0 then
+		return
+	end
 	combineBonusMods(bonusMods, getBonusMods(rSource, createEffectFilter("create", newBonusTypes), rTarget))
 	combineBonusMods(bonusMods, getBonusMods(rTarget, createEffectFilter("receive", newBonusTypes), rSource))
 end
